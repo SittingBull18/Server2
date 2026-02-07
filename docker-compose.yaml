@@ -1,15 +1,52 @@
+
 services:
   apache:
     build: ./apache
     image: multi-apache
+    restart: unless-stopped
     container_name: apache
     ports:
       - "80:80"
       - "443:443"
     volumes:
-      - ./sites:/var/www:ro
-      - ./vhosts:/etc/apache2/sites-enabled:ro
-      # - ./apache/apache.conf:/etc/apache2/apache2.conf:ro
+      - ./sites:/var/www
+      - ./apache/apache.conf:/etc/apache2/apache2.conf:ro
+      - ./vhosts/sites-available:/etc/apache2/sites-available:rw
+      - ./vhosts/sites-enabled:/etc/apache2/sites-enabled:rw
+    networks:
+      - web
+
+  php81:
+#    image: php:8.1-fpm
+    build: ./php/8.1  # This points to the location of your new Dockerfile
+    container_name: php81
+    restart: unless-stopped
+    volumes:
+      # PHP runtime settings
+      - ./php/8.1/php.ini:/usr/local/etc/php/php.ini:ro
+      # Main FPM config
+      # - ./php/8.1/php-fpm.conf:/usr/local/etc/php-fpm.conf:ro
+      # Default pool
+      - ./php/8.1/www.conf:/usr/local/etc/php-fpm.d/www.conf:ro
+      - ./sites:/var/www
+
+    networks:
+      - web
+
+  mysql:
+    image: mysql:8.0
+    container_name: mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: Frankie2hollis  # Root password for MySQL
+      MYSQL_USER: andreas                  # Root user
+      MYSQL_PASSWORD: Fritzeflink18      # Root user password
+      MYSQL_DATABASE: wordpress_db      # Default database
+    volumes:
+      - ./mysql/data:/var/lib/mysql      # Persist MySQL data
+      - ./mysql/init:/docker-entrypoint-initdb.d  # Custom init scripts
+    ports:
+      - "3306:3306"
     networks:
       - web
 

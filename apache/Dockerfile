@@ -9,7 +9,7 @@ RUN apt-get update && \
     apt-get install -y \
         apache2 \
         ca-certificates \
-        curl nano htop btop \
+        curl nano htop btop net-tools \
         vim-tiny \
         procps && \
     apt-get clean && rm -rf /var/lib/apt/lists/*
@@ -17,9 +17,6 @@ RUN apt-get update && \
 # Enable recommended Apache modules
 RUN a2dismod mpm_prefork && \
     a2enmod mpm_event rewrite headers ssl proxy proxy_fcgi
-
-# Copy main Apache config
-COPY apache.conf /etc/apache2/apache2.conf
 
 # Expose HTTP + HTTPS
 EXPOSE 80 443
