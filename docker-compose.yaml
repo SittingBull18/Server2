@@ -12,20 +12,17 @@ services:
       - ./apache/apache.conf:/etc/apache2/apache2.conf:ro
       - ./vhosts/sites-available:/etc/apache2/sites-available:rw
       - ./vhosts/sites-enabled:/etc/apache2/sites-enabled:rw
+      - ./certbot/letsencrypt:/etc/letsencrypt
+      - ./certbot/www:/var/www/certbot
     networks:
       - web
 
   php81:
-#    image: php:8.1-fpm
     build: ./php/8.1  # This points to the location of your new Dockerfile
     container_name: php81
     restart: unless-stopped
     volumes:
-      # PHP runtime settings
       - ./php/8.1/php.ini:/usr/local/etc/php/php.ini:ro
-      # Main FPM config
-      # - ./php/8.1/php-fpm.conf:/usr/local/etc/php-fpm.conf:ro
-      # Default pool
       - ./php/8.1/www.conf:/usr/local/etc/php-fpm.d/www.conf:ro
       - ./sites:/var/www
 
@@ -46,6 +43,19 @@ services:
     networks:
       - web
 
+  certbot:
+    image: certbot/certbot
+    container_name: certbot
+    restart: unless-stopped
+    volumes:
+      - ./certbot/letsencrypt:/etc/letsencrypt
+      - ./certbot/run-certbot.sh:/usr/local/bin/run-certbot.sh:ro
+      - ./certbot/www:/var/www/certbot
+    entrypoint: ["/usr/local/bin/run-certbot.sh"]
+
 networks:
   web:
     driver: bridge
+
+volumes:
+  letsencrypt:
