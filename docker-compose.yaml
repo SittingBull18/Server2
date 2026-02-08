@@ -1,4 +1,3 @@
-
 services:
   apache:
     build: ./apache
@@ -38,10 +37,7 @@ services:
     container_name: mysql
     restart: unless-stopped
     environment:
-      MYSQL_ROOT_PASSWORD: Frankie2hollis  # Root password for MySQL
-      MYSQL_USER: andreas                  # Root user
-      MYSQL_PASSWORD: Fritzeflink18      # Root user password
-      MYSQL_DATABASE: wordpress_db      # Default database
+      MYSQL_ROOT_PASSWORD: Frankie2Hollis
     volumes:
       - ./mysql/data:/var/lib/mysql      # Persist MySQL data
       - ./mysql/init:/docker-entrypoint-initdb.d  # Custom init scripts

@@ -1,17 +1,16 @@
--- Create databases for each application
-CREATE DATABASE wordpress_db;
-CREATE DATABASE forum_db;
-CREATE DATABASE blog_db;
+-- WordPress DB
+CREATE DATABASE IF NOT EXISTS amateurfunk_ulm;
+CREATE USER IF NOT EXISTS 'amateurfunk_ulm'@'%' IDENTIFIED WITH caching_sha2_password BY 'tschuess';
+GRANT SELECT, INSERT, UPDATE, DELETE, CREATE, DROP, INDEX, ALTER ON amateurfunk_ulm.* TO 'amateurfunk_ulm'@'%';
 
--- Create users and grant privileges for each database
-CREATE USER 'wordpress_user'@'%' IDENTIFIED BY 'wordpress_password';
-GRANT ALL PRIVILEGES ON wordpress_db.* TO 'wordpress_user'@'%';
-FLUSH PRIVILEGES;
+-- Forum DB
+-- CREATE DATABASE IF NOT EXISTS forum_db;
+-- CREATE USER IF NOT EXISTS 'forum_user'@'%' IDENTIFIED WITH mysql_native_password BY 'FORUM_DB_PASSWORD';
+-- GRANT SELECT, INSERT, UPDATE, DELETE, CREATE, DROP, INDEX, ALTER ON forum_db.* TO 'forum_user'@'%';
 
-CREATE USER 'forum_user'@'%' IDENTIFIED BY 'forum_password';
-GRANT ALL PRIVILEGES ON forum_db.* TO 'forum_user'@'%';
-FLUSH PRIVILEGES;
+-- Blog DB
+-- CREATE DATABASE IF NOT EXISTS blog_db;
+-- CREATE USER IF NOT EXISTS 'blog_user'@'%' IDENTIFIED WITH mysql_native_password BY 'BLOG_DB_PASSWORD';
+-- GRANT SELECT, INSERT, UPDATE, DELETE, CREATE, DROP, INDEX, ALTER ON blog_db.* TO 'blog_user'@'%';
 
-CREATE USER 'blog_user'@'%' IDENTIFIED BY 'blog_password';
-GRANT ALL PRIVILEGES ON blog_db.* TO 'blog_user'@'%';
 FLUSH PRIVILEGES;
