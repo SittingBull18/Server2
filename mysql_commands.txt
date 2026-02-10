@@ -1,0 +1,19 @@
+mysqldump -u tuefteltreffuser -ptschuess   --databases tuefteltreff \
+--single-transaction   --routines   --triggers   --events \
+--set-gtid-purged=OFF   --default-character-set=utf8mb4 \
+--no-tablespaces > ~/tmp/tt.sql
+
+
+docker exec -it mysql bash
+
+mysql -u root -p  <password>
+
+  create database tuefteltreff DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+  create user 'tuefteltreffuser'@'localhost' IDENTIFIED BY 'password';
+  GRANT ALL PRIVILEGES ON tuefteltreff.* TO 'tuefteltreffuser'@'localhost';
+  FLUSH PRIVILEGES;
+
+cat /tmp/tt.sql | docker exec  mysql mysql -u tuefteltreffuser -ptschuess tuefteltreff
+
+
+docker exec -i mysql sh -c 'exec mysql -u tuefteltreffuser -ptschuess tuefteltreff' < /tmp/tt.sql 

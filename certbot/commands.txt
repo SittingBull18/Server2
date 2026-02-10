@@ -2,3 +2,9 @@
 docker compose run --rm certbot certonly --webroot -w /var/www/certbot \
   -d amateurfunk-ulm.de \
   --email dm4ab@darc.de --agree-tos --no-eff-email
+
+
+docker compose exec certbot sh
+certbot certonly --webroot -w /var/www/certbot   -d 'tueftel-treff.de,www.tueftel-treff.de'   --email dm4ab@darc.d
+e --agree-tos --no-eff-email
+
