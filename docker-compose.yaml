@@ -7,9 +7,11 @@ services:
     ports:
       - "80:80"
       - "443:443"
+      - "8443:8443"
     volumes:
       - ./sites:/var/www
       - ./apache/apache.conf:/etc/apache2/apache2.conf:ro
+      - ./apache/ports.conf:/etc/apache2/ports.conf:ro
       - ./vhosts/sites-available:/etc/apache2/sites-available:rw
       - ./vhosts/sites-enabled:/etc/apache2/sites-enabled:rw
       - ./certbot/letsencrypt:/etc/letsencrypt

@@ -9,11 +9,22 @@ docker exec -it mysql bash
 mysql -u root -p  <password>
 
   create database tuefteltreff DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-  create user 'tuefteltreffuser'@'localhost' IDENTIFIED BY 'password';
-  GRANT ALL PRIVILEGES ON tuefteltreff.* TO 'tuefteltreffuser'@'localhost';
+  create user 'tuefteltreffuser'@'%' IDENTIFIED BY 'password';
+  GRANT ALL PRIVILEGES ON tuefteltreff.* TO 'tuefteltreffuser'@'%';
   FLUSH PRIVILEGES;
 
 cat /tmp/tt.sql | docker exec  mysql mysql -u tuefteltreffuser -ptschuess tuefteltreff
 
 
-docker exec -i mysql sh -c 'exec mysql -u tuefteltreffuser -ptschuess tuefteltreff' < /tmp/tt.sql 
+docker exec -i mysql sh -c 'mysql -u dm4ab -pFliege71 -D dm4ab' < ~/tmp/dm4ab.sql
+
+SELECT 
+    table_name AS `Table`,
+    table_rows AS `Rows`,
+    ROUND(data_length / 1024 / 1024, 2) AS `Data_MB`,
+    ROUND(index_length / 1024 / 1024, 2) AS `Index_MB`,
+    ROUND((data_length + index_length) / 1024 / 1024, 2) AS `Total_MB`
+FROM information_schema.tables
+WHERE table_schema = 'your_database_name'
+ORDER BY (data_length + index_length) DESC;
+
