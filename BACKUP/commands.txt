@@ -1,0 +1,42 @@
+
+=====================================
+== backup mysql
+
+for db in $(docker exec mysql mysql -u root -pFrankie2Hollis -N -e "SHOW DATABASES;" | grep -Ev "^(information_schema|performance_schema|mysql|sys)$"); do
+  echo "Backing up $db..."
+  docker exec mysql mysqldump \
+    -u root -pFrankie2Hollis \
+    --databases "$db" \
+    --routines \
+    --events \
+    --triggers \
+    --single-transaction \
+    --hex-blob \
+  > "${db}_$(date +%F).sql"
+done
+
+docker exec -i mysql mysql -u root -pFrankie2Hollis < mydatabase_2026-02-23.sql
+
+================================
+== backup users
+
+docker exec mysql mysqldump \
+  -u root -pFrankie2Hollis \
+  mysql \
+  > mysql_users_$(date +%F).sql
+
+docker exec -i mysql mysql -u root -pFrankie2Hollis < mysql_users_2026-02-23.sql
+
+
+DATE=$(date +%F) && \
+for d in ../sites/*/; do \
+  [ -d "$d" ] || continue; \
+  n=$(basename "$d"); \
+  echo "zipping $n."; \
+  tar -cf - \
+      --exclude='nextcloud/data' \
+      -C ../sites \
+      "$n" | \
+  zstd -19 -T6 -of "./${n}_${DATE}.zst"; \
+  echo ""; 
+done
